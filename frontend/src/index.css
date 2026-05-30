@@ -1,0 +1,47 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --green: #00C853;
+  --blue: #2979FF;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  min-height: 100vh;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body.light {
+  background-color: #F5F5F5;
+  color: #111111;
+  --bg-primary: #F5F5F5;
+  --bg-card: #FFFFFF;
+  --text-primary: #111111;
+  --text-secondary: #555555;
+  --border: #DDDDDD;
+}
+
+body.dark {
+  background-color: #0A0A0A;
+  color: #FFFFFF;
+  --bg-primary: #0A0A0A;
+  --bg-card: #1A1A1A;
+  --text-primary: #FFFFFF;
+  --text-secondary: #AAAAAA;
+  --border: #2A2A2A;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
