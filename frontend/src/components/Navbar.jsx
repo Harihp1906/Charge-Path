@@ -14,6 +14,7 @@ function Navbar() {
       <div className="navbar-links">
         <Link to="/">Home</Link>
         <Link to="/map">Find Stations</Link>
+        <Link to="/hotels">Hotels</Link>
       </div>
 
       <div className="navbar-actions">
