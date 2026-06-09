@@ -1,5 +1,7 @@
 .map-page {
   height: 100vh;
+  padding-top: 64px;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   background-color: var(--bg-primary);

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
-import Navbar from '../components/Navbar'
+import BookingModal from '../components/BookingModal'
 import '../styles/Map.css'
 
 delete L.Icon.Default.prototype._getIconUrl
@@ -66,6 +66,7 @@ function Map() {
   const [places, setPlaces] = useState([])
   const [loading, setLoading] = useState(true)
   const [locationError, setLocationError] = useState(false)
+  const [selectedStation, setSelectedStation] = useState(null)
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
@@ -77,7 +78,8 @@ function Map() {
       () => {
         setLocationError(true)
         setLoading(false)
-      }
+      },
+      { enableHighAccuracy: true, timeout: 10000 }
     )
   }, [])
 
@@ -119,9 +121,17 @@ function Map() {
     }
   }
 
+  function handleBookClick(place) {
+    setSelectedStation({
+      name: place.name,
+      lat: place.lat,
+      lon: place.lon,
+      distance: place.distance + ' km away',
+    })
+  }
+
   return (
     <div className="map-page">
-      <Navbar />
       <div className="map-container">
         <div className="map-sidebar">
           <div className="sidebar-header">
@@ -162,7 +172,12 @@ function Map() {
                   <span className="place-name">{place.name}</span>
                   <span className="place-distance">{place.distance} km away</span>
                 </div>
-                <button className="place-book-btn">Book</button>
+                <button
+                  className="place-book-btn"
+                  onClick={() => handleBookClick(place)}
+                >
+                  Book
+                </button>
               </div>
             ))}
             {!loading && places.length === 0 && !locationError && (
@@ -180,7 +195,7 @@ function Map() {
             </div>
           ) : (
             <MapContainer
-              center={[20.5937, 78.9629]}
+              center={[11.1271, 78.6569]}
               zoom={5}
               className="leaflet-map"
             >
@@ -212,6 +227,13 @@ function Map() {
           )}
         </div>
       </div>
+
+      {selectedStation && (
+        <BookingModal
+          station={selectedStation}
+          onClose={() => setSelectedStation(null)}
+        />
+      )}
     </div>
   )
 }

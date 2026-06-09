@@ -1,71 +1,116 @@
 .navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 2rem;
-  height: 64px;
-  background-color: var(--bg-card);
-  border-bottom: 1px solid var(--border);
-  position: sticky;
-  top: 0;
-  z-index: 100;
+  padding: 0 32px;
+  background: var(--card);
+  border-bottom: 1px solid rgba(0, 200, 83, 0.15);
+  z-index: 999;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
 }
 
 .navbar-logo {
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: var(--green);
-  letter-spacing: 1px;
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--primary);
+  text-decoration: none;
+  letter-spacing: -0.5px;
 }
 
 .navbar-links {
   display: flex;
-  gap: 2rem;
+  align-items: center;
+  gap: 32px;
 }
 
 .navbar-links a {
   font-size: 0.95rem;
-  color: var(--text-primary);
   font-weight: 500;
-  transition: color 0.2s ease;
+  color: var(--text);
+  text-decoration: none;
+  transition: color 0.2s;
 }
 
 .navbar-links a:hover {
-  color: var(--green);
-}
-
-.theme-toggle {
-  background: var(--bg-primary);
-  color: var(--text-primary);
-  border: 1px solid var(--border);
-  padding: 0.4rem 1rem;
-  border-radius: 20px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  transition: all 0.2s ease;
-}
-
-.theme-toggle:hover {
-  border-color: var(--green);
-  color: var(--green);
+  color: var(--primary);
 }
 
 .navbar-actions {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 14px;
 }
 
 .btn-signin {
-  background-color: var(--green);
-  color: #000000;
-  padding: 0.45rem 1.2rem;
+  padding: 9px 22px;
   border-radius: 8px;
+  background: var(--primary);
+  color: #000;
   font-weight: 700;
   font-size: 0.9rem;
-  transition: opacity 0.2s ease;
+  text-decoration: none;
+  transition: opacity 0.2s;
 }
 
 .btn-signin:hover {
   opacity: 0.85;
+}
+
+.theme-toggle {
+  padding: 8px 16px;
+  border-radius: 8px;
+  background: none;
+  border: 1.5px solid rgba(0, 200, 83, 0.3);
+  color: var(--text);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border 0.2s, color 0.2s;
+}
+
+.theme-toggle:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.navbar-username {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.btn-logout {
+  padding: 8px 18px;
+  border-radius: 8px;
+  background: none;
+  border: 1.5px solid #ff5252;
+  color: #ff5252;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.btn-logout:hover {
+  background: #ff5252;
+  color: #fff;
+}
+
+@media (max-width: 600px) {
+  .navbar {
+    padding: 0 16px;
+  }
+
+  .navbar-links {
+    gap: 16px;
+  }
+
+  .navbar-links a {
+    font-size: 0.85rem;
+  }
 }

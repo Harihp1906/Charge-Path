@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Link } from 'react-router-dom'
-import Navbar from '../components/Navbar'
 import '../styles/Landing.css'
 
 const stats = [
@@ -42,13 +41,21 @@ const hotelData = [
   { name: 'ChargeRest Suites', distance: '4.3 km away', status: 'busy', rooms: 'Fully Booked' },
 ]
 
+const fadeUp = {
+  hidden: { opacity: 0, y: 40 },
+  show: { opacity: 1, y: 0 },
+}
+
+const staggerContainer = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.12 } },
+}
+
 function Landing() {
   const [activeTab, setActiveTab] = useState('charging')
 
   return (
     <div className="landing">
-      <Navbar />
-
       <section className="hero">
         <motion.div
           className="hero-left"
@@ -121,7 +128,6 @@ function Landing() {
                       </span>
                     </div>
                   ))}
-
                   <div className="preview-booking">
                     <div className="booking-row">
                       <span className="booking-label">Slot Booked</span>
@@ -162,7 +168,6 @@ function Landing() {
                       </div>
                     </div>
                   ))}
-
                   <div className="preview-booking">
                     <div className="booking-row">
                       <span className="booking-label">Hotel</span>
@@ -186,52 +191,93 @@ function Landing() {
 
       <motion.section
         className="stats-bar"
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
+        variants={staggerContainer}
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, amount: 0.3 }}
       >
         {stats.map((stat, index) => (
-          <div key={index} className="stat-item">
+          <motion.div
+            key={index}
+            className="stat-item"
+            variants={fadeUp}
+            transition={{ duration: 0.5 }}
+          >
             <span className="stat-value">{stat.value}</span>
             <span className="stat-label">{stat.label}</span>
-          </div>
+          </motion.div>
         ))}
       </motion.section>
 
       <section className="features">
         <motion.h2
           className="features-title"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
           Everything your EV journey needs
         </motion.h2>
-        <div className="features-grid">
+
+        <motion.div
+          className="features-grid"
+          variants={staggerContainer}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.2 }}
+        >
           {features.map((feature, index) => (
             <motion.div
               key={index}
               className="feature-card"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
+              variants={fadeUp}
+              transition={{ duration: 0.5 }}
+              whileHover={{ y: -6, transition: { duration: 0.2 } }}
             >
               <h3>{feature.title}</h3>
               <p>{feature.description}</p>
             </motion.div>
           ))}
-        </div>
+        </motion.div>
       </section>
 
       <motion.section
         className="cta-section"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
+        variants={fadeUp}
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true }}
         transition={{ duration: 0.7 }}
       >
-        <h2>Ready to drive smarter?</h2>
-        <p>Join thousands of EV owners who plan their journey with Charge-Path.</p>
-        <Link to="/auth" className="btn-primary">Create Free Account</Link>
+        <motion.h2
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          Ready to drive smarter?
+        </motion.h2>
+        <motion.p
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+        >
+          Join thousands of EV owners who plan their journey with Charge-Path.
+        </motion.p>
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
+          <Link to="/auth" className="btn-primary">Create Free Account</Link>
+        </motion.div>
       </motion.section>
     </div>
   )

@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Link, useNavigate } from 'react-router-dom'
 import { useGoogleLogin } from '@react-oauth/google'
+import { useAuth } from '../context/AuthContext'
+import axios from 'axios'
 import '../styles/Auth.css'
 
 function Auth() {
@@ -9,40 +11,54 @@ function Auth() {
   const [signinData, setSigninData] = useState({ email: '', password: '' })
   const [signupData, setSignupData] = useState({ name: '', email: '', password: '' })
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
   const navigate = useNavigate()
+  const { loginWithEmail, registerWithEmail, loginWithGoogle } = useAuth()
 
-  const handleSignin = (e) => {
+  async function handleSignin(e) {
     e.preventDefault()
-    console.log('Sign In:', signinData)
+    setLoading(true)
+    setError('')
+    try {
+      await loginWithEmail(signinData.email, signinData.password)
+      navigate('/map')
+    } catch (err) {
+      setError(err.response?.data?.error || 'Sign in failed. Please try again.')
+    }
+    setLoading(false)
   }
 
-  const handleSignup = (e) => {
+  async function handleSignup(e) {
     e.preventDefault()
-    console.log('Sign Up:', signupData)
+    setLoading(true)
+    setError('')
+    try {
+      await registerWithEmail(signupData.name, signupData.email, signupData.password)
+      navigate('/map')
+    } catch (err) {
+      setError(err.response?.data?.error || 'Sign up failed. Please try again.')
+    }
+    setLoading(false)
   }
 
   const handleGoogleSuccess = async (tokenResponse) => {
     setLoading(true)
+    setError('')
     try {
-      const res = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
-        headers: {
-          Authorization: `Bearer ${tokenResponse.access_token}`
-        }
+      const res = await axios.get('https://www.googleapis.com/oauth2/v3/userinfo', {
+        headers: { Authorization: 'Bearer ' + tokenResponse.access_token }
       })
-      const userInfo = await res.json()
-      console.log('Google User:', userInfo)
-      localStorage.setItem('cp-user', JSON.stringify(userInfo))
+      await loginWithGoogle(res.data)
       navigate('/map')
-    } catch (error) {
-      console.error('Google login failed:', error)
-    } finally {
-      setLoading(false)
+    } catch (err) {
+      setError('Google sign in failed. Please try again.')
     }
+    setLoading(false)
   }
 
   const googleLogin = useGoogleLogin({
     onSuccess: handleGoogleSuccess,
-    onError: () => console.log('Google Login Failed')
+    onError: () => setError('Google sign in failed. Please try again.')
   })
 
   return (
@@ -94,7 +110,7 @@ function Auth() {
             <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
             <path fill="none" d="M0 0h48v48H0z"/>
           </svg>
-          {loading ? 'Signing in...' : 'Continue with Google'}
+          {loading ? 'Please wait...' : 'Continue with Google'}
         </button>
 
         <div className="auth-divider">
@@ -102,6 +118,16 @@ function Auth() {
           <p>or</p>
           <span />
         </div>
+
+        {error && (
+          <motion.p
+            className="auth-error"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            {error}
+          </motion.p>
+        )}
 
         <AnimatePresence mode="wait">
           {activeTab === 'signin' && (
@@ -135,7 +161,9 @@ function Auth() {
               <div className="forgot-row">
                 <span className="forgot-link">Forgot Password?</span>
               </div>
-              <button type="submit" className="auth-submit">Sign In</button>
+              <button type="submit" className="auth-submit" disabled={loading}>
+                {loading ? 'Signing In...' : 'Sign In'}
+              </button>
             </motion.form>
           )}
 
@@ -176,7 +204,9 @@ function Auth() {
                   required
                 />
               </div>
-              <button type="submit" className="auth-submit">Create Account</button>
+              <button type="submit" className="auth-submit" disabled={loading}>
+                {loading ? 'Creating Account...' : 'Create Account'}
+              </button>
             </motion.form>
           )}
         </AnimatePresence>
@@ -184,11 +214,11 @@ function Auth() {
         <p className="auth-switch">
           {activeTab === 'signin' ? (
             <>Don't have an account?{' '}
-              <span className="switch-link" onClick={() => setActiveTab('signup')}>Sign Up</span>
+              <span className="switch-link" onClick={() => { setActiveTab('signup'); setError('') }}>Sign Up</span>
             </>
           ) : (
             <>Already have an account?{' '}
-              <span className="switch-link" onClick={() => setActiveTab('signin')}>Sign In</span>
+              <span className="switch-link" onClick={() => { setActiveTab('signin'); setError('') }}>Sign In</span>
             </>
           )}
         </p>

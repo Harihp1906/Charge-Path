@@ -1,9 +1,17 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useTheme } from '../context/ThemeContext'
+import { useAuth } from '../context/AuthContext'
 import '../styles/Navbar.css'
 
 function Navbar() {
   const { theme, toggleTheme } = useTheme()
+  const { user, logout } = useAuth()
+  const navigate = useNavigate()
+
+  function handleLogout() {
+    logout()
+    navigate('/')
+  }
 
   return (
     <nav className="navbar">
@@ -14,11 +22,17 @@ function Navbar() {
       <div className="navbar-links">
         <Link to="/">Home</Link>
         <Link to="/map">Find Stations</Link>
-        <Link to="/hotels">Hotels</Link>
       </div>
 
       <div className="navbar-actions">
-        <Link to="/auth" className="btn-signin">Sign In</Link>
+        {user ? (
+          <>
+            <span className="navbar-username">Hi, {user.name.split(' ')[0]}</span>
+            <button className="btn-logout" onClick={handleLogout}>Logout</button>
+          </>
+        ) : (
+          <Link to="/auth" className="btn-signin">Sign In</Link>
+        )}
         <button className="theme-toggle" onClick={toggleTheme}>
           {theme === 'light' ? 'Dark Mode' : 'Light Mode'}
         </button>
